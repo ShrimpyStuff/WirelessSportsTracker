@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Boston Public School Sports Tracker</title>
+        <link rel="stylesheet" type="text/css" href="/site/index.css">
+    </head>
+    <body>
+        <table id="table">
+            <caption id="name"></caption>
+            <tr>
+                <th>200m</th>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>400m</th>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <form id="form" action="">
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" name="fname" autocomplete="name">
+            <button>Lookup</button>
+        </form>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            let socket = io();
+            let form = document.getElementById('form');
+            let input = document.getElementById('input');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (input.value) {
+                    console.log('hello')
+                    socket.emit('lookup', input.value);
+                    input.value = '';
+                }
+            });
+        </script>
+    </body>
+</html>
