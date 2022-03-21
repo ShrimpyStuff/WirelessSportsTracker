@@ -2,25 +2,27 @@
 <html>
     <head>
         <title>Boston Public School Sports Tracker</title>
-        <link rel="stylesheet" type="text/css" href="./index.css">
+        <link rel="stylesheet" type="text/css" href="/site/index.css">
     </head>
     <body>
         <table id="table">
             <caption id="name"></caption>
             <tr>
-                <th>200m</th>
+                <th></th>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <th>400m</th>
+                <th></th>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
         </table>
         <form id="form" action="" class="center">
-            <label for="fname">First name:</label>
-            <input type="text" id="fname" name="fname" autocomplete="name">
+            <label for="fullname">First name:</label>
+            <input type="text" id="fullname" name="fullname" autocomplete="name">
             <button>Lookup</button>
         </form>
         <script src="/socket.io/socket.io.js"></script>
@@ -28,27 +30,40 @@
             let socket = io();
             let table = document.getElementById('table');
             let form = document.getElementById('form');
-            let input = document.getElementById('input');
+            let input = document.getElementById('fullname');
 
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 if (input.value) {
-                    console.log('hello')
                     socket.emit('lookup', input.value);
+                    document.getElementById('name').appendChild(document.createTextNode(input.value));
                     input.value = '';
                 }
             });
 
             socket.on('infoReturn', (json) => {
-                let jsonParse = json;
-                for (dataObject in jsonParse) {
+                let jsonParse = JSON.parse(json);
+                for (let dataObject of jsonParse) {
                     let event = document.createElement('tr');
-                    event.appendChild(document.createElement('th').appendChild(document.createTextNode(dataObject.title)));
-                    event.appendChild(document.createElement('td').appendChild(document.createTextNode(dataObject.people)));
-                    event.appendChild(document.createElement('td').appendChild(document.createTextNode(dataObject.time)));
+
+                    let title = document.createElement('th');
+                    title.appendChild(document.createTextNode(dataObject.title));
+                    event.appendChild(title);
+
+                    let people = document.createElement('td');
+                    people.appendChild(document.createTextNode(dataObject.people));
+                    event.appendChild(people);
+
+                    let time = document.createElement('td');
+                    time.appendChild(document.createTextNode(dataObject.time));
+                    event.appendChild(time);
+
+                    let placing = document.createElement('td');
                     if (dataObject.finished == true) {
-                        event.appendChild(document.createElement('td').appendChild(document.createTextNode(dataObject.placing)));
+                        placing.appendChild(document.createTextNode(dataObject.placing));
                     }
+                    event.appendChild(placing);
+
                     table.appendChild(event);
                 }
             });

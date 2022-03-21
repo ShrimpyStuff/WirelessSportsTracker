@@ -6,6 +6,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const port = 80
+const serverIp = '0.0.0.0'
 
 app.use(express.static(__dirname + '/public'));
 
@@ -18,12 +19,16 @@ app.get('/admin', (req, res) => {
 })
 
 io.on('connection', (socket) => {
+  //socket.emit('infoReturn', "[{\n  \"title\": \"hello\",\n  \"people\": \"Ok, Ok, Ok, Ok\",\n  \"time\": \"gold\",\n  \"finished\": true,\n  \"placing\": \"1st\"\n}]")
   socket.on('lookup', (input) => {
     console.log(input)
-    socket.emit('info', JSON.stringify(data))
+    let object = {
+      title: '', people: '', time: '', finished: '', placing: ''
+    }
+    socket.emit('infoReturn', JSON.stringify([object]))
   });
 });
 
-server.listen(port, '192.168.16.1', () => {
+server.listen(port, serverIp, () => {
   console.log(`listening on port ${port}`)
 })
