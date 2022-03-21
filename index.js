@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   socket.on('lookup', (input) => {
     console.log(input)
+    socket.emit('info', JSON.stringify(data))
   });
 });
 
