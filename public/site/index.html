@@ -46,6 +46,9 @@
                     event.appendChild(document.createElement('th').appendChild(document.createTextNode(dataObject.title)));
                     event.appendChild(document.createElement('td').appendChild(document.createTextNode(dataObject.people)));
                     event.appendChild(document.createElement('td').appendChild(document.createTextNode(dataObject.time)));
+                    if (dataObject.finished == true) {
+                        event.appendChild(document.createElement('td').appendChild(document.createTextNode(dataObject.placing)));
+                    }
                     table.appendChild(event);
                 }
             });
