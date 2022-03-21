@@ -1,3 +1,4 @@
+const { ok } = require('assert');
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -8,21 +9,12 @@ const port = 80
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('*', (req, res, next) => {
-  if (req.hostname == "admin.ranks.local") {
-    res.sendFile(__dirname + '/adminSite/index.html')
-  }
-  else if (req.ip == "192.168.16.1") {
-    res.redirect(`${req.ip}:3000`)
-  }
-  else if (req.hostname == "status") {
-    res.redirect(`${req.hostname}:3000`)
-  }
-  next()
-})
-
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/site/index.html')
+})
+
+app.get('/admin', (req, res) => {
+  res.sendFile(__dirname + '/public/adminSite/index.html')
 })
 
 io.on('connection', (socket) => {
@@ -31,6 +23,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(port, () => {
+server.listen(port, '192.168.16.1', () => {
   console.log(`listening on port ${port}`)
 })

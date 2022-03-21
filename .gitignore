@@ -1,4 +1,5 @@
 *.bat
 *.lnk
+*.ps1
 /node_modules
 /dhcpsrv2.5.2
