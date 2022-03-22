@@ -5,20 +5,22 @@
         <link rel="stylesheet" type="text/css" href="/site/index.css">
     </head>
     <body>
-        <table id="table">
+        <table>
             <caption id="name"></caption>
-            <tr>
-                <th></th>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <th></th>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            <div id="table">
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </div>
         </table>
         <form id="form" action="" class="center">
             <label for="fullname">First name:</label>
@@ -29,6 +31,7 @@
         <script>
             let socket = io();
             let table = document.getElementById('table');
+            let tableClone = table.cloneNode(true);
             let form = document.getElementById('form');
             let input = document.getElementById('fullname');
 
@@ -36,8 +39,9 @@
                 e.preventDefault();
                 if (input.value) {
                     socket.emit('lookup', input.value);
-                    document.getElementById('name').appendChild(document.createTextNode(input.value));
+                    document.getElementById('name').textContent = input.value;
                     input.value = '';
+                    table = tableClone;
                 }
             });
 
@@ -63,7 +67,6 @@
                         placing.appendChild(document.createTextNode(dataObject.placing));
                     }
                     event.appendChild(placing);
-
                     table.appendChild(event);
                 }
             });
