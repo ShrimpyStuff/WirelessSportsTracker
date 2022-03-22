@@ -2,12 +2,12 @@
 <html>
     <head>
         <title>Boston Public School Sports Tracker</title>
-        <link rel="stylesheet" type="text/css" href="/site/index.css">
+        <link rel="stylesheet" type="text/css" href="../site/index.css">
     </head>
     <body>
         <table>
             <caption id="name"></caption>
-            <div id="table">
+            <tbody id="table">
                 <tr>
                     <th></th>
                     <td></td>
@@ -20,7 +20,7 @@
                     <td></td>
                     <td></td>
                 </tr>
-            </div>
+            </tbody>
         </table>
         <form id="form" action="" class="center">
             <label for="fullname">First name:</label>
@@ -29,7 +29,7 @@
         </form>
         <script src="/socket.io/socket.io.js"></script>
         <script>
-            let socket = io();
+            //let socket = io();
             let table = document.getElementById('table');
             let tableClone = table.cloneNode(true);
             let form = document.getElementById('form');
@@ -46,7 +46,11 @@
             });
 
             socket.on('infoReturn', (json) => {
-                let jsonParse = JSON.parse(json);
+                let jsonParse = JSON.parse(JSON.stringify(json));
+                if (!Array.isArray(jsonParse)) {
+                    jsonParse = [];
+                    jsonParse.push(JSON.parse(JSON.stringify(json)));
+                }
                 for (let dataObject of jsonParse) {
                     let event = document.createElement('tr');
 
