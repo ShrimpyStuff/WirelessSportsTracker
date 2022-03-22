@@ -15,6 +15,10 @@ table {
     text-align: center;
 }
 
+#monitor {
+    margin-top: 10px;
+}
+
 td, th {
     border: 1px solid #cacaca;
     text-align: left;

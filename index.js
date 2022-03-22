@@ -19,13 +19,20 @@ app.get('/admin', (req, res) => {
 })
 
 io.on('connection', (socket) => {
+  let lastRequested = '';
+  let monitoring = false;
   //socket.emit('infoReturn', "[{\n  \"title\": \"hello\",\n  \"people\": \"Ok, Ok, Ok, Ok\",\n  \"time\": \"gold\",\n  \"finished\": true,\n  \"placing\": \"1st\"\n}]")
   socket.on('lookup', (input) => {
+    lastRequested = input;
     console.log(input)
     let object = {
       title: '', people: '', time: '', finished: '', placing: ''
     }
     socket.emit('infoReturn', JSON.stringify([object]))
+  });
+
+  socket.on('monitorRequest', () => {
+    monitoring = true;
   });
 });
 

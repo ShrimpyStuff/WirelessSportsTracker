@@ -25,7 +25,9 @@
         <form id="form" action="" class="center">
             <label for="fullname">First name:</label>
             <input type="text" id="fullname" name="fullname" autocomplete="name">
-            <button>Lookup</button>
+            <button type="submit">Lookup</button>
+            <br/>
+            <button type="button" id="monitor" disabled>Monitor</button>
         </form>
         <script src="/socket.io/socket.io.js"></script>
         <script>
@@ -34,6 +36,7 @@
             let tableClone = table.cloneNode(true);
             let form = document.getElementById('form');
             let input = document.getElementById('fullname');
+            let monitor = document.getElementById('monitor');
 
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -45,7 +48,12 @@
                 }
             });
 
+            monitor.addEventListener('click', (e) => {
+                socket.emit('monitorRequest');
+            });
+
             socket.on('infoReturn', (json) => {
+                monitor.disabled = false;
                 let jsonParse = JSON.parse(JSON.stringify(json));
                 if (!Array.isArray(jsonParse)) {
                     jsonParse = [];
