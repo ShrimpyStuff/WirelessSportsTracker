@@ -1,5 +1,6 @@
 const { ok } = require('assert');
 const express = require('express');
+const { fstat } = require('fs');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
@@ -18,14 +19,6 @@ app.get('/admin', (req, res) => {
   res.sendFile(__dirname + '/public/adminSite/index.html')
 })
 
-/** @type {WeakMap<SocketIO.Socket, Object>} */
-const socketIOLocals = new WeakMap();
-io.use((socket, next) => {
-    const locals = { player: null }; // Create new instance
-    socketIOLocals.set(socket, locals);
-    next();
-});
-
 io.on('connection', (socket) => {
   socket.lastRequested = '';
   socket.monitoring = false;
@@ -39,8 +32,29 @@ io.on('connection', (socket) => {
 
   socket.on('monitorRequest', () => {
     socket.monitoring = true;
+    //console.log(socket)
+    idk();
   });
 });
+
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    }
+    return value;
+  };
+};
+
+
+/*for (let socket of io.sockets.sockets) {
+  let isMonitoring = JSON.parse(JSON.stringify(socket[1], getCircularReplacer())).monitoring;
+  let lastRequested = JSON.parse(JSON.stringify(socket[1], getCircularReplacer())).lastRequested;
+}*/
 
 server.listen(port, serverIp, () => {
   console.log(`listening on port ${port}`)
