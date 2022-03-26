@@ -1,11 +1,10 @@
-const { ok } = require('assert');
 const express = require('express');
-const { fstat } = require('fs');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+const ioNormal = new Server(server);
+const ioAdmin = new Server(server, {path: "/admin_socket.io/"})
 const port = 80
 const serverIp = '0.0.0.0'
 
@@ -19,7 +18,7 @@ app.get('/admin', (req, res) => {
   res.sendFile(__dirname + '/public/adminSite/index.html')
 })
 
-io.on('connection', (socket) => {
+ioNormal.on('connection', (socket) => {
   socket.lastRequested = '';
   socket.monitoring = false;
   socket.on('lookup', (input) => {
@@ -32,9 +31,14 @@ io.on('connection', (socket) => {
 
   socket.on('monitorRequest', () => {
     socket.monitoring = true;
-    //console.log(socket)
-    idk();
   });
+});
+
+ioAdmin.on('connection', (socket) => {
+  /*for (let otherSocket of ioNormal.sockets.sockets) {
+    let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
+    let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
+  }*/
 });
 
 const getCircularReplacer = () => {
@@ -49,12 +53,6 @@ const getCircularReplacer = () => {
     return value;
   };
 };
-
-
-/*for (let socket of io.sockets.sockets) {
-  let isMonitoring = JSON.parse(JSON.stringify(socket[1], getCircularReplacer())).monitoring;
-  let lastRequested = JSON.parse(JSON.stringify(socket[1], getCircularReplacer())).lastRequested;
-}*/
 
 server.listen(port, serverIp, () => {
   console.log(`listening on port ${port}`)
