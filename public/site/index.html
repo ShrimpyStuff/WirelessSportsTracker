@@ -33,7 +33,6 @@
         <script>
             let socket = io();
             let table = document.getElementById('table');
-            let tableClone = document.importNode(table, true);
             let form = document.getElementById('form');
             let input = document.getElementById('fullname');
             let monitor = document.getElementById('monitor');
@@ -42,7 +41,9 @@
                 e.preventDefault();
                 if (input.value) {
                     document.getElementById('name').textContent = input.value;
-                    table.replaceWith(tableClone);
+                    while (table.firstChild) {
+                        table.removeChild(table.firstChild);
+                    }
                     socket.emit('lookup', input.value);
                     input.value = '';
                 }

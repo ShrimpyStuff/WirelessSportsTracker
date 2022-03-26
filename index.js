@@ -18,21 +18,27 @@ app.get('/admin', (req, res) => {
   res.sendFile(__dirname + '/public/adminSite/index.html')
 })
 
+/** @type {WeakMap<SocketIO.Socket, Object>} */
+const socketIOLocals = new WeakMap();
+io.use((socket, next) => {
+    const locals = { player: null }; // Create new instance
+    socketIOLocals.set(socket, locals);
+    next();
+});
+
 io.on('connection', (socket) => {
-  let lastRequested = '';
-  let monitoring = false;
-  //socket.emit('infoReturn', "[{\n  \"title\": \"hello\",\n  \"people\": \"Ok, Ok, Ok, Ok\",\n  \"time\": \"gold\",\n  \"finished\": false,\n  \"placing\": \"1st\"\n}]")
+  socket.lastRequested = '';
+  socket.monitoring = false;
   socket.on('lookup', (input) => {
     lastRequested = input;
-    console.log(input)
     let object = {
-      title: '', people: '', time: '', finished: '', placing: ''
+      title: '', people: '', time: '', finished: true, placing: '1st'
     }
     socket.emit('infoReturn', JSON.stringify([object]))
   });
 
   socket.on('monitorRequest', () => {
-    monitoring = true;
+    socket.monitoring = true;
   });
 });
 
