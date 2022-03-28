@@ -19,8 +19,8 @@ app.get('/admin', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  let lastRequested = '';
-  let monitoring = false;
+  socket.lastRequested = '';
+  socket.monitoring = false;
   //socket.emit('infoReturn', "[{\n  \"title\": \"hello\",\n  \"people\": \"Ok, Ok, Ok, Ok\",\n  \"time\": \"gold\",\n  \"finished\": false,\n  \"placing\": \"1st\"\n}]")
   socket.on('lookup', (input) => {
     lastRequested = input;
@@ -32,7 +32,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('monitorRequest', () => {
-    monitoring = true;
+    socket.monitoring = true;
+    socket.lastRequested = lastRequested;
   });
 });
 
