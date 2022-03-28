@@ -1,3 +1,4 @@
+const sqlite3 = require('sqlite3').verbose();
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -18,15 +19,34 @@ app.get('/admin', (req, res) => {
   res.sendFile(__dirname + '/public/adminSite/index.html')
 })
 
+let db = new sqlite3.Database('./info.db')
+let lookupsql = `SELECT Event event,
+                FROM 
+`;
+
 ioNormal.on('connection', (socket) => {
   socket.lastRequested = '';
   socket.monitoring = false;
   socket.on('lookup', (input) => {
     lastRequested = input;
-    let object = {
-      title: '', people: '', time: '', finished: true, placing: '1st'
+    let array = [];
+    let blankobject = {
+      title: '', people: '', time: '', finished: false, placing: ''
     }
-    socket.emit('infoReturn', JSON.stringify([object]))
+    db.each(sql, [lastRequested], (err, row) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      let object = {...blankobject}
+      object.title = row.title;
+      object.people = row.people;
+      object.time = row.time;
+      object.finished = row.finished;
+      object.placing = row.placing;
+      array.push(object)
+    });
+    socket.emit('infoReturn', JSON.stringify(array))
   });
 
   socket.on('monitorRequest', () => {
@@ -35,10 +55,19 @@ ioNormal.on('connection', (socket) => {
 });
 
 ioAdmin.on('connection', (socket) => {
-  /*for (let otherSocket of ioNormal.sockets.sockets) {
-    let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
-    let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
-  }*/
+  socket.on('update', (input) => {
+    db.each
+    input = JSON.parse(input);
+    for (let otherSocket of ioNormal.sockets.sockets) {
+      let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
+      let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
+
+      if (!isMonitoring) continue;
+      if (lastRequested !== input.person) continue;
+
+      otherSocket.emit('infoReturn', JSON.stringify([]));
+    }
+  });
 });
 
 const getCircularReplacer = () => {
