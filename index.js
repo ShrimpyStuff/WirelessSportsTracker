@@ -5,35 +5,49 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const ioNormal = new Server(server);
-const ioAdmin = new Server(server, {path: "/admin_socket.io/"})
+const ioAdmin = new Server(server, {path: "/admin_socket.io/"});
 const port = 80
 const serverIp = '0.0.0.0'
 
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/site/index.html')
-})
+  res.sendFile(__dirname + '/public/site/index.html');
+});
 
 app.get('/admin', (req, res) => {
-  res.sendFile(__dirname + '/public/adminSite/index.html')
-})
+  res.sendFile(__dirname + '/public/adminSite/index.html');
+});
 
-let db = new sqlite3.Database('./info.db')
+let db = new sqlite3.Database('./info.db');
+
+/*db.run(`CREATE TABLE [IF NOT EXISTS] students (Name TEXT, Event TEXT, Grade INTEGER)`)*/
+
+db.run(`INSERT INTO students (Name, Event, Grade)
+VALUES (?), (?), (?)`, ["Sajid Monowar", "ok", 8], function(err) {
+  if (err) {
+    return console.log(err.message);
+  }
+  // get the last insert id
+  console.log(`A row has been inserted with rowid ${this.lastID}`);
+});
+
 let lookupsql = `SELECT Event event,
-                FROM 
+                        Grade grade
+                 FROM students
+                 WHERE Name = ?
 `;
 
 ioNormal.on('connection', (socket) => {
   socket.lastRequested = '';
   socket.monitoring = false;
   socket.on('lookup', (input) => {
-    lastRequested = input;
+    lastRequested = input
     let array = [];
     let blankobject = {
       title: '', people: '', time: '', finished: false, placing: ''
     }
-    db.each(sql, [lastRequested], (err, row) => {
+    db.each(lookupsql, [lastRequested], (err, row) => {
       if (err) {
         console.log(err);
         return;
