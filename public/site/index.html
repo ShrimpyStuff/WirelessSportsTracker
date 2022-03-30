@@ -6,7 +6,7 @@
     </head>
     <body>
         <label class="switch">
-            <input type="checkbox">
+            <input type="checkbox" id="darkmodeSwitch">
             <span class="slider round"></span>
         </label>
         <img class="center" width="15%" height="15%" src="../favicon.ico"/>
@@ -34,6 +34,17 @@
             <br/>
             <button type="button" id="monitor" disabled>Monitor</button>
         </form>
+        <script>
+            let darkmodeSwitch = document.getElementById('darkmodeSwitch');
+
+            darkmodeSwitch.addEventListener('change', () => {
+                if (darkmodeSwitch.checked) {
+                    document.body.style.backgroundColor = "#b3b2b2";
+                } else {
+                    document.body.style.backgroundColor = "white";
+                }
+            });
+        </script>
         <script src="/socket.io/socket.io.js"></script>
         <script>
             let socket = io();
