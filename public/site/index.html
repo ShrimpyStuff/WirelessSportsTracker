@@ -37,23 +37,24 @@
         <script>
             let darkmodeSwitch = document.getElementById('darkmodeSwitch');
 
+            let firstLength;
             darkmodeSwitch.addEventListener('change', () => {
+                let sheet = document.styleSheets[0];
                 if (darkmodeSwitch.checked) {
-                    document.body.style.backgroundColor = "rgb(70, 70, 70)";
-                    document.getElementsByTagName('table' && 'caption').name.style.backgroundColor = "rgb(0, 204, 85)";
-                    let even = false;
-                    for (let item of document.querySelectorAll('tr')) {
-                        item.style.backgroundColor = (even) ? "rgb(55, 149, 124)" : "rgb(21, 183, 140)";
-                        even = (even) ? false : true;
-                    }
+                    firstLength = sheet.cssRules.length;
+                    sheet.insertRule('body { background-color: #666666}');
+                    sheet.insertRule('table caption { background-color: rgb(0, 204, 85)}', firstLength);
+                    sheet.insertRule('tr {background-color: rgb(21, 183, 140)}', firstLength);
+                    sheet.insertRule('tr:nth-child(even) {background-color: rgb(55, 149, 124)}', firstLength);
+                    sheet.insertRule('button { background-color: rgb(28, 144, 176)}', firstLength);
+                    sheet.insertRule('button:hover:not(:disabled) { background-color: #00a0cc}', firstLength);
                 } else {
-                    document.body.style.backgroundColor = "white";
-                    document.getElementsByTagName('table' && 'caption').name.style.backgroundColor = "rgb(148, 255, 193)";
-                    let even = false;
-                    for (let item of document.querySelectorAll('tr')) {
-                        item.style.backgroundColor = (even) ? "#c9ebe2" : "#d4faf0";
-                        even = (even) ? false : true;
-                    }
+                    sheet.deleteRule(firstLength);
+                    sheet.deleteRule(firstLength);
+                    sheet.deleteRule(firstLength);
+                    sheet.deleteRule(firstLength);
+                    sheet.deleteRule(firstLength);
+                    sheet.deleteRule(firstLength);
                 }
             });
         </script>
