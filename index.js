@@ -21,8 +21,6 @@ app.get('/admin', (req, res) => {
 
 let db = new sqlite3.Database('./info.db');
 
-/*db.run(`CREATE TABLE [IF NOT EXISTS] students (Name TEXT, Event TEXT, Grade INTEGER)`)*/
-
 db.run(`INSERT INTO students (Name, Event, Grade)
 VALUES (?), (?), (?)`, ["Sajid Monowar", "ok", 8], function(err) {
   if (err) {
@@ -58,9 +56,9 @@ ioNormal.on('connection', (socket) => {
       object.time = row.time;
       object.finished = row.finished;
       object.placing = row.placing;
-      array.push(object)
+      array.push(object);
     });
-    socket.emit('infoReturn', JSON.stringify(array))
+    socket.emit('infoReturn', JSON.stringify(array));
   });
 
   socket.on('monitorRequest', () => {
