@@ -42,7 +42,7 @@ ioNormal.on('connection', (socket) => {
   socket.lastRequested = '';
   socket.monitoring = false;
   socket.on('lookup', (input) => {
-    lastRequested = input
+    socket.lastRequested = input;
     let array = [];
     let blankobject = {
       title: '', people: '', time: '', finished: false, placing: ''
