@@ -21,13 +21,15 @@ app.get('/admin', (req, res) => {
 
 let db = new sqlite3.Database('./info.db');
 
-db.run(`INSERT INTO students (Name, Event, Grade)
-VALUES (?), (?), (?)`, ["Sajid Monowar", "ok", 8], function(err) {
+db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, Event VARCHAR(100))`)
+
+db.run(`INSERT INTO students (Name, Grade, Event)
+VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], function(err) {
   if (err) {
     return console.log(err.message);
   }
   // get the last insert id
-  console.log(`A row has been inserted with rowid ${this.lastID}`);
+  console.log(`Coolio`);
 });
 
 let lookupsql = `SELECT Event event,
