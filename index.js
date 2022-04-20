@@ -6,8 +6,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const ioNormal = new Server(server);
 const ioAdmin = new Server(server, {path: "/admin_socket.io/"});
-const port = 80
-const serverIp = '0.0.0.0'
+const port = 80;
+const serverIp = '0.0.0.0';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -24,11 +24,10 @@ let db = new sqlite3.Database('./info.db');
 db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, Event VARCHAR(100))`)
 
 db.run(`INSERT INTO students (Name, Grade, Event)
-VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], function(err) {
+VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], (err) => {
   if (err) {
     return console.log(err.message);
   }
-  // get the last insert id
   console.log(`Coolio`);
 });
 
