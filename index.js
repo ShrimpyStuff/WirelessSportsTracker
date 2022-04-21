@@ -69,7 +69,7 @@ ioNormal.on('connection', (socket) => {
 
 ioAdmin.on('connection', (socket) => {
   socket.on('update', (input) => {
-    db.each
+    //db.each
     input = JSON.parse(input);
     for (let otherSocket of ioNormal.sockets.sockets) {
       let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
