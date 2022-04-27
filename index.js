@@ -6,8 +6,8 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const ioNormal = new Server(server);
 const ioAdmin = new Server(server, {path: "/admin_socket.io/"});
-const port = 80
-const serverIp = '0.0.0.0'
+const port = 80;
+const serverIp = '0.0.0.0';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -24,11 +24,10 @@ let db = new sqlite3.Database('./info.db');
 db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, Event VARCHAR(100))`)
 
 db.run(`INSERT INTO students (Name, Grade, Event)
-VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], function(err) {
+VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], (err) => {
   if (err) {
     return console.log(err.message);
   }
-  // get the last insert id
   console.log(`Coolio`);
 });
 
@@ -42,7 +41,7 @@ ioNormal.on('connection', (socket) => {
   socket.lastRequested = '';
   socket.monitoring = false;
   socket.on('lookup', (input) => {
-    lastRequested = input
+    socket.lastRequested = input;
     let array = [];
     let blankobject = {
       title: '', people: '', time: '', finished: false, placing: ''
@@ -70,7 +69,7 @@ ioNormal.on('connection', (socket) => {
 
 ioAdmin.on('connection', (socket) => {
   socket.on('update', (input) => {
-    db.each
+    //db.each
     input = JSON.parse(input);
     for (let otherSocket of ioNormal.sockets.sockets) {
       let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
