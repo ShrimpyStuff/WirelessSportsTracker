@@ -7,7 +7,6 @@ let monitor = document.getElementById('monitor');
 form.addEventListener('submit', (e) => {
 e.preventDefault();
 if (input.value) {
-    document.getElementById('name').textContent = input.value;
     while (table.firstChild) {
         table.removeChild(table.firstChild);
     }
@@ -28,15 +27,14 @@ if (!Array.isArray(jsonParse)) {
     jsonParse.push(JSON.parse(JSON.stringify(json)));
 }
 for (let dataObject of jsonParse) {
+    document.getElementById('name').textContent = dataObject.person;
+    document.getElementById('grade').textContent = dataObject.grade;
+    document.getElementById('dob').textContent = dataObject.dob;
     let event = document.createElement('tr');
 
     let title = document.createElement('th');
     title.appendChild(document.createTextNode(dataObject.title));
     event.appendChild(title);
-
-    let people = document.createElement('td');
-    people.appendChild(document.createTextNode(dataObject.people));
-    event.appendChild(people);
 
     let time = document.createElement('td');
     time.appendChild(document.createTextNode(dataObject.time));

@@ -21,10 +21,10 @@ app.get('/admin', (req, res) => {
 
 let db = new sqlite3.Database('./info.db');
 
-db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, Event VARCHAR(100))`)
+db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, DOB VARCHAR(100), Event VARCHAR(100))`)
 
-db.run(`INSERT INTO students (Name, Grade, Event)
-VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], (err) => {
+db.run(`INSERT INTO students (Name, Grade, DOB, Event)
+VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "10/17/2008", "ok"], (err) => {
   if (err) {
     return console.log(err.message);
   }
@@ -32,7 +32,8 @@ VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], (err) => {
 });
 
 let lookupsql = `SELECT Event event,
-                        Grade grade
+                        Grade grade,
+                        DOB dob
                  FROM students
                  WHERE Name = ?
 `;
@@ -44,7 +45,7 @@ ioNormal.on('connection', (socket) => {
     socket.lastRequested = input;
     let array = [];
     let blankobject = {
-      title: '', people: '', time: '', finished: false, placing: ''
+      title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
     }
     db.each(lookupsql, [lastRequested], (err, row) => {
       if (err) {
@@ -52,11 +53,13 @@ ioNormal.on('connection', (socket) => {
         return;
       }
       let object = {...blankobject}
-      object.title = row.title;
-      object.people = row.people;
-      object.time = row.time;
-      object.finished = row.finished;
-      object.placing = row.placing;
+      object.title = rowevent.title;
+      object.person = row.person;
+      object.grade = row.grade;
+      object.dob = row.dob;
+      object.time = rowevent.time;
+      object.finished = rowevent.finished;
+      object.placing = rowevent.placing;
       array.push(object);
     });
     socket.emit('infoReturn', JSON.stringify(array));
@@ -77,8 +80,29 @@ ioAdmin.on('connection', (socket) => {
 
       if (!isMonitoring) continue;
       if (lastRequested !== input.person) continue;
+      
+      let array = [];
+      let blankobject = {
+        title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
+      }
 
-      otherSocket.emit('infoReturn', JSON.stringify([]));
+      db.each(lookupsql, [lastRequested], (err, row) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        let object = {...blankobject}
+        object.title = rowevent.title;
+        object.person = row.person;
+        object.grade = row.grade;
+        object.dob = row.dob;
+        object.time = rowevent.time;
+        object.finished = rowevent.finished;
+        object.placing = rowevent.placing;
+        array.push(object);
+      });
+
+      otherSocket.emit('infoReturn', JSON.stringify(array));
     }
   });
 });
