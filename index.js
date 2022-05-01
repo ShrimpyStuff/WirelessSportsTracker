@@ -24,11 +24,11 @@ let db = new sqlite3.Database('./info.db');
 db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, Event VARCHAR(100))`)
 
 db.run(`INSERT INTO students (Name, Grade, Event)
-VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "ok"], (err) => {
+VALUES (?, ?, ?)`, ["Sajid Monowar", 8, "ok"], (err) => {
   if (err) {
     return console.log(err.message);
   }
-  console.log(`Coolio`);
+  console.log(`This worked.`);
 });
 
 let lookupsql = `SELECT Event event,
