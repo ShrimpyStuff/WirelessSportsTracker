@@ -52,6 +52,11 @@ table caption {
     margin-bottom: 0.5%;
 }
 
+#grade, #dob {
+    font-size: 120%;
+    padding: 0.5%;
+}
+
 tr {
     background-color: #d4faf0;
 }
