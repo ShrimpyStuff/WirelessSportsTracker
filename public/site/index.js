@@ -44,7 +44,7 @@ socket.on('infoReturn', (json) => {
         if (dataObject.finished == true) {
             placing.appendChild(document.createTextNode(dataObject.placing));
         }
-        else if (dataObject.finished != true) {
+        else {
             placing.appendChild(document.createTextNode("Event not finished or Error"));
         }
         event.appendChild(placing);
