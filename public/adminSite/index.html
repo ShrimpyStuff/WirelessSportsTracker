@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Boston Public School Sports Tracker</title>
+        <link rel="stylesheet" type="text/css" href="../site/index.css">
+    </head>
+    <body>
+        <label class="switch">
+            <input type="checkbox" id="darkmodeSwitch">
+            <span class="slider round"></span>
+        </label>
+        <img class="center" width="15%" height="15%" src="../favicon.ico"/>
+        <table>
+            <caption id="name">Name: <idkthisisrandom contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="grade">Grade: <idkthisisrandom contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="dob">DOB (MM/DD/YY): <idkthisisrandom contenteditable>Edit this</idkthisisrandom></caption>
+            <tbody id="table">
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <form id="form" action="" class="center">
+            <label for="fullname">First name:</label>
+            <input type="text" id="fullname" name="fullname" autocomplete="name">
+            <button type="submit">Submit</button>
+            <br/>
+            <button type="button" id="monitor" disabled>Monitor</button>
+        </form>
+        <script src="../site/darkmode.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="../site/index.js"></script>
+    </body>
+</html>
