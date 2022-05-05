@@ -11,9 +11,9 @@
         </label>
         <img class="center" width="15%" height="15%" src="../favicon.ico"/>
         <table>
-            <caption id="name">Name: <idkthisisrandom contenteditable>Edit this</idkthisisrandom></caption>
-            <caption id="grade">Grade: <idkthisisrandom contenteditable>Edit this</idkthisisrandom></caption>
-            <caption id="dob">DOB (MM/DD/YY): <idkthisisrandom contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="name">Name: <idkthisisrandom id="nameText" contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="grade">Grade: <idkthisisrandom id="gradeText" contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="dob">DOB (MM/DD/YY): <idkthisisrandom id="dobText" contenteditable>Edit this</idkthisisrandom></caption>
             <tbody id="table">
                 <tr>
                     <th></th>
@@ -30,10 +30,11 @@
             </tbody>
         </table>
         <form id="form" action="" class="center">
+            <button type="button" id="Lookup">Lookup</button>
             <button type="submit">Submit</button>
         </form>
-        <script src="../site/darkmode.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script src="../site/index.js"></script>
+        <script src="../darkmode.js"></script>
+        <script src="../adminSite/index.js"></script>
+        <!--<script src="/socket.io/socket.io.js"></script>!-->
     </body>
 </html>
