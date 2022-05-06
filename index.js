@@ -21,17 +21,9 @@ app.get('/admin', (req, res) => {
 
 let db = new sqlite3.Database('./info.db');
 
-db.run(`CREATE TABLE students (Name VARCHAR(100), Grade NUMBER, DOB VARCHAR(100), Event VARCHAR(100))`)
+db.run(`CREATE TABLE IF NOT EXISTS students (Name VARCHAR(100), Grade NUMBER, DOB VARCHAR(100), Events VARCHAR(100), UNIQUE(Name, DOB))`);
 
-db.run(`INSERT INTO students (Name, Grade, DOB, Event)
-VALUES (?), (?), (?)`, ["Sajid Monowar", 8, "10/17/2008", "ok"], (err) => {
-  if (err) {
-    return console.log(err.message);
-  }
-  console.log(`This worked.`);
-});
-
-let lookupsql = `SELECT Event event,
+let lookupsql = `SELECT Events events,
                         Grade grade,
                         DOB dob
                  FROM students
@@ -47,14 +39,14 @@ ioNormal.on('connection', (socket) => {
     let blankobject = {
       title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
     }
-    db.each(lookupsql, [lastRequested], (err, row) => {
+    db.get(lookupsql, [lastRequested], (err, row) => {
       if (err) {
         console.log(err);
         return;
       }
-      let object = {...blankobject}
+      let object = {...blankobject};
       object.title = rowevent.title;
-      object.person = row.person;
+      object.person = lastRequested;
       object.grade = row.grade;
       object.dob = row.dob;
       object.time = rowevent.time;
@@ -71,8 +63,18 @@ ioNormal.on('connection', (socket) => {
 });
 
 ioAdmin.on('connection', (socket) => {
+  socket.on('insertPerson', (input) => {
+    db.run(`INSERT INTO students (Name, Grade, DOB, Events)
+    VALUES (?, ?, ?, ?)`, ["Sajid Monowar", 8, "10/17/2008", "ok"], (err) => {
+      if (err) {
+        return console.log(err.message);
+      }
+      console.log(`This worked.`);
+    });
+  });
+
   socket.on('update', (input) => {
-    //db.each
+    //db.run
     input = JSON.parse(input);
     for (let otherSocket of ioNormal.sockets.sockets) {
       let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
@@ -85,22 +87,15 @@ ioAdmin.on('connection', (socket) => {
       let blankobject = {
         title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
       }
-
-      db.each(lookupsql, [lastRequested], (err, row) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        let object = {...blankobject}
-        object.title = rowevent.title;
-        object.person = row.person;
-        object.grade = row.grade;
-        object.dob = row.dob;
-        object.time = rowevent.time;
-        object.finished = rowevent.finished;
-        object.placing = rowevent.placing;
-        array.push(object);
-      });
+      let object = {...blankobject}
+      object.title = rowevent.title;
+      object.person = row.person;
+      object.grade = row.grade;
+      object.dob = row.dob;
+      object.time = rowevent.time;
+      object.finished = rowevent.finished;
+      object.placing = rowevent.placing;
+      array.push(object);
 
       otherSocket.emit('infoReturn', JSON.stringify(array));
     }
