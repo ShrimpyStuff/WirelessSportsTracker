@@ -1,13 +1,13 @@
-//let socket = io();
+let socket = io();
 let nameCaption = document.getElementById('nameText');
 let gradeCaption = document.getElementById('gradeText');
 let dobCaption = document.getElementById('dobText');
 
 document.getElementById("Lookup").addEventListener('click', (e) => {
-    console.log(nameCaption.textContent.trim());
-    console.log(gradeCaption.textContent.trim());
-    console.log(dobCaption.textContent.trim());
-    socket.emit('lookup', nameCaption.textContent().trim());
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
+    socket.emit('lookup', nameCaption.textContent.trim());
 });
 
 socket.on('infoReturn', (json) => {
@@ -24,13 +24,13 @@ socket.on('infoReturn', (json) => {
 
         let title = document.createElement('th');
         let titleTextNode = document.createTextNode(dataObject.title);
-        titleTextNode.contentEditable = true;
+        title.contentEditable = 'true';
         title.appendChild(titleTextNode);
         event.appendChild(title);
 
         let time = document.createElement('td');
         let timeTextNode = document.createTextNode(dataObject.time);
-        timeTextNode.contentEditable = true;
+        time.contentEditable = 'true';
         time.appendChild(timeTextNode);
         event.appendChild(time);
 

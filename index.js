@@ -37,24 +37,26 @@ ioNormal.on('connection', (socket) => {
     socket.lastRequested = input;
     let array = [];
     let blankobject = {
-      title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
+      events: {}, person: '', grade: '', dob: ''
     }
-    db.get(lookupsql, [lastRequested], (err, row) => {
+    db.get(lookupsql, [input], (err, row) => {
       if (err) {
         console.log(err);
         return;
       }
+      console.log(row)
       let object = {...blankobject};
-      object.title = rowevent.title;
-      object.person = lastRequested;
+      //object.events = JSON.parse(row.events);
+      //object.title = rowevent.title;
+      object.person = input;
       object.grade = row.grade;
       object.dob = row.dob;
-      object.time = rowevent.time;
-      object.finished = rowevent.finished;
-      object.placing = rowevent.placing;
+      //object.time = rowevent.time;
+      //object.finished = rowevent.finished;
+      //object.placing = rowevent.placing;
       array.push(object);
+      socket.emit('infoReturn', JSON.stringify(array));
     });
-    socket.emit('infoReturn', JSON.stringify(array));
   });
 
   socket.on('monitorRequest', () => {

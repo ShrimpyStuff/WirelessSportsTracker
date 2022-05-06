@@ -5,14 +5,14 @@ let input = document.getElementById('fullname');
 let monitor = document.getElementById('monitor');
 
 form.addEventListener('submit', (e) => {
-e.preventDefault();
-if (input.value) {
-    while (table.firstChild) {
-        table.removeChild(table.firstChild);
+    e.preventDefault();
+    if (input.value) {
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
+        }
+        socket.emit('lookup', input.value);
+        input.value = '';
     }
-    socket.emit('lookup', input.value);
-    input.value = '';
-}
 });
 
 monitor.addEventListener('click', (e) => {
@@ -20,6 +20,7 @@ monitor.addEventListener('click', (e) => {
 });
 
 socket.on('infoReturn', (json) => {
+    console.log(json);
     monitor.disabled = false;
     let jsonParse = JSON.parse(JSON.parse(JSON.stringify(json)));
     if (!Array.isArray(jsonParse)) {
