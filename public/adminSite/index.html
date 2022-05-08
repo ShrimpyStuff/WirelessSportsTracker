@@ -11,9 +11,9 @@
         </label>
         <img class="center" width="15%" height="15%" src="../favicon.ico"/>
         <table>
-            <caption id="name">Name: <idkthisisrandom id="nameText" contenteditable>Edit this</idkthisisrandom></caption>
-            <caption id="grade">Grade: <idkthisisrandom id="gradeText" contenteditable>Edit this</idkthisisrandom></caption>
-            <caption id="dob">DOB (MM/DD/YY): <idkthisisrandom id="dobText" contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="name">Name: <idkthisisrandom id="nameText" onclick="document.execCommand('selectAll', false, null)" contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="grade">Grade: <idkthisisrandom id="gradeText" onclick="document.execCommand('selectAll', false, null)" contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="dob">DOB (MM/DD/YYYY): <idkthisisrandom id="dobText" onclick="document.execCommand('selectAll', false, null)" contenteditable>Edit this</idkthisisrandom></caption>
             <tbody id="table">
                 <tr>
                     <th></th>
@@ -27,6 +27,7 @@
                 </tr>
             </tbody>
         </table>
+        <button class="center" id="newEventRow">Add new event row</button>
         <form id="form" action="" class="center">
             <button type="button" id="Lookup">Lookup</button>
             <button type="submit">Submit</button>

@@ -44,7 +44,9 @@ ioNormal.on('connection', (socket) => {
         console.log(err);
         return;
       }
-      console.log(row)
+      if (row == undefined || !row ) {
+        return;
+      }
       let object = {...blankobject};
       //object.events = JSON.parse(row.events);
       //object.title = rowevent.title;

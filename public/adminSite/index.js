@@ -35,6 +35,7 @@ socket.on('infoReturn', (json) => {
         event.appendChild(time);
 
         let placing = document.createElement('td');
+        placing.contentEditable = 'true';
         if (dataObject.finished == true) {
             placing.appendChild(document.createTextNode(dataObject.placing));
         }
