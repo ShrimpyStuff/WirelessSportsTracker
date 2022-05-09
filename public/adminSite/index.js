@@ -11,6 +11,10 @@ document.getElementById('Lookup').addEventListener('click', (e) => {
     socket.emit('lookup', nameCaption.textContent.trim());
 });
 
+let removeRow = (e, row) => {
+    table.deleteRow(row);
+};
+
 document.getElementById('newEventRow').addEventListener('click', (e) => {
     let event = document.createElement('tr');
     
@@ -67,6 +71,15 @@ socket.on('infoReturn', (json) => {
             placing.appendChild(document.createTextNode('Event not finished or Error'));
         }
         event.appendChild(placing);
+
+        let checkbox = document.createElement('td');
+        let checkboxButton = document.createElement('button');
+        checkboxButton.type = "checkbox";
+        checkboxButton.appendChild(document.createTextNode('Remove row'));
+        checkbox.appendChild(checkboxButton);
+        checkboxButton.addEventListener('click', (e) => { removeRow(e, event.rowIndex) });
+        event.appendChild(checkbox);
+
         table.appendChild(event);
     }
 });
