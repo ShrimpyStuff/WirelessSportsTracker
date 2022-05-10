@@ -58,11 +58,11 @@ table caption {
 }
 
 tr {
-    background-color: #d4faf0;
+    background-color: #b6e6d8;
 }
 
 tr:nth-child(even) {
-    background-color: #c9ebe2;
+    background-color: #a7cac0;
 }
 
 .switch {
