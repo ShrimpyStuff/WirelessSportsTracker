@@ -10,7 +10,7 @@ form.addEventListener('submit', (e) => {
         while (table.firstChild) {
             table.removeChild(table.firstChild);
         }
-        socket.emit('lookup', input.value);
+        socket.emit('lookup', input.value.toLowerCase());
         input.value = '';
     }
 });

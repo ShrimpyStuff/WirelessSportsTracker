@@ -2,6 +2,7 @@ let socket = io();
 let table = document.getElementById('table');
 let nameCaption = document.getElementById('nameText');
 let gradeCaption = document.getElementById('gradeText');
+let form = document.getElementById('form');
 let dobCaption = document.getElementById('dobText');
 
 document.getElementById('Lookup').addEventListener('click', (e) => {
@@ -14,6 +15,15 @@ document.getElementById('Lookup').addEventListener('click', (e) => {
 let removeRow = (e, row) => {
     table.deleteRow(row);
 };
+
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (nameCaption.textContent.trim().toLowerCase().match(/^(edit this|events||)$/)) {
+        socket.emit('update', eventJson);
+    } else {
+        socket.emit('update', nameCaption.textContent.trim())
+    }
+})
 
 document.getElementById('newEventRow').addEventListener('click', (e) => {
     let event = document.createElement('tr');

@@ -39,7 +39,7 @@ ioNormal.on('connection', (socket) => {
     let blankobject = {
       events: {}, person: '', grade: '', dob: ''
     }
-    db.get(lookupsql, [input], (err, row) => {
+    db.get(lookupsql, [input.toLowerCase()], (err, row) => {
       if (err) {
         console.log(err);
         return;
@@ -75,6 +75,10 @@ ioAdmin.on('connection', (socket) => {
       }
       console.log(`This worked.`);
     });
+  });
+
+  socket.on('update', (input, eventJson) => {
+    
   });
 
   socket.on('update', (input) => {
