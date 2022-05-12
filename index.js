@@ -77,32 +77,47 @@ ioAdmin.on('connection', (socket) => {
     });
   });
 
-  socket.on('update', (input, eventJson) => {
-    //db.run
-    input = JSON.parse(input);
+  socket.on('update', (eventString, eventJson) => {
     for (let otherSocket of ioNormal.sockets.sockets) {
       let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
       let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
 
       if (!isMonitoring) continue;
-      
-      if (lastRequested !== input) continue;
-      
-      let array = [];
-      let blankobject = {
-        title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
-      }
-      let object = {...blankobject}
-      object.title = rowevent.title;
-      object.person = row.person;
-      object.grade = row.grade;
-      object.dob = row.dob;
-      object.time = rowevent.time;
-      object.finished = rowevent.finished;
-      object.placing = rowevent.placing;
-      array.push(object);
+      db.get(lookupsql, [input.toLowerCase()], (err, row) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        if (row == undefined || !row ) {
+          return;
+        }
+        let events = JSON.parse(row.events);
+        let hasEvent = false;
+        for (let i=0; i< 1; i++) {
+          if (events[i].title) {
+            hasEvent = true; 
+          }
+        }
 
-      otherSocket.emit('infoReturn', JSON.stringify(array));
+        if (hasEvent) {
+
+        }
+
+        let array = [];
+        let blankobject = {
+          events: '', person: '', grade: '', dob: ''
+        }
+        let object = {...blankobject}
+        object.events = row.events;
+        object.person = row.person;
+        object.grade = row.grade;
+        object.dob = row.dob;
+        array.push(object);
+
+        otherSocket.emit('infoReturn', JSON.stringify(array));
+
+        //db.run
+      });
     }
   });
 
@@ -118,16 +133,14 @@ ioAdmin.on('connection', (socket) => {
       
       let array = [];
       let blankobject = {
-        title: '', person: '', grade: '', dob: '', time: '', finished: false, placing: ''
+        events: '', person: '', grade: '', dob: ''
       }
       let object = {...blankobject}
-      object.title = rowevent.title;
+
+      object.events = row.events;
       object.person = row.person;
       object.grade = row.grade;
       object.dob = row.dob;
-      object.time = rowevent.time;
-      object.finished = rowevent.finished;
-      object.placing = rowevent.placing;
       array.push(object);
 
       otherSocket.emit('infoReturn', JSON.stringify(array));

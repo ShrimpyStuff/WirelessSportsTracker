@@ -19,7 +19,7 @@ let removeRow = (e, row) => {
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (nameCaption.textContent.trim().toLowerCase().match(/^(edit this|events||)$/)) {
-        socket.emit('update', eventJson);
+        socket.emit('update', 'Event Update', eventJson);
     } else {
         socket.emit('update', nameCaption.textContent.trim())
     }
@@ -50,14 +50,12 @@ document.getElementById('newEventRow').addEventListener('click', (e) => {
 
 socket.on('infoReturn', (json) => {
     let jsonParse = JSON.parse(JSON.parse(JSON.stringify(json)));
-    if (!Array.isArray(jsonParse)) {
-        jsonParse = [];
-        jsonParse.push(JSON.parse(JSON.stringify(json)));
-    }
-    for (let dataObject of jsonParse) {
-        nameCaption.textContent = dataObject.person;
-        gradeCaption.textContent = dataObject.grade;
-        dobCaption.textContent = dataObject.dob;
+    let eventsParse = JSON.parse(jsonParse.events);
+    
+    for (let dataObject of eventsParse) {
+        nameCaption.textContent = json.person;
+        gradeCaption.textContent = json.grade;
+        dobCaption.textContent = json.dob;
         let event = document.createElement('tr');
 
         let title = document.createElement('th');

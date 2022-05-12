@@ -23,14 +23,12 @@ socket.on('infoReturn', (json) => {
     console.log(json);
     monitor.disabled = false;
     let jsonParse = JSON.parse(JSON.parse(JSON.stringify(json)));
-    if (!Array.isArray(jsonParse)) {
-        jsonParse = [];
-        jsonParse.push(JSON.parse(JSON.stringify(json)));
-    }
-    for (let dataObject of jsonParse) {
-        document.getElementById('name').textContent = dataObject.person;
-        document.getElementById('grade').textContent = dataObject.grade;
-        document.getElementById('dob').textContent = dataObject.dob;
+    let eventsParse = JSON.parse(jsonParse.events);
+    
+    for (let dataObject of eventsParse) {
+        nameCaption.textContent = json.person;
+        gradeCaption.textContent = json.grade;
+        dobCaption.textContent = json.dob;
         let event = document.createElement('tr');
 
         let title = document.createElement('th');
