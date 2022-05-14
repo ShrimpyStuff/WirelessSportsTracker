@@ -35,7 +35,6 @@ ioNormal.on('connection', (socket) => {
   socket.monitoring = false;
   socket.on('lookup', (input) => {
     socket.lastRequested = input;
-    let array = [];
     let blankobject = {
       events: {}, person: '', grade: '', dob: ''
     }
@@ -45,19 +44,14 @@ ioNormal.on('connection', (socket) => {
         return;
       }
       if (row == undefined || !row ) {
-        return;
+        return console.log('Failed', input);
       }
       let object = {...blankobject};
-      //object.events = JSON.parse(row.events);
-      //object.title = rowevent.title;
+      object.events = JSON.parse(JSON.stringify(row.events));
       object.person = input;
       object.grade = row.grade;
       object.dob = row.dob;
-      //object.time = rowevent.time;
-      //object.finished = rowevent.finished;
-      //object.placing = rowevent.placing;
-      array.push(object);
-      socket.emit('infoReturn', JSON.stringify(array));
+      socket.emit('infoReturn', JSON.stringify(object));
     });
   });
 
@@ -67,61 +61,82 @@ ioNormal.on('connection', (socket) => {
 });
 
 ioAdmin.on('connection', (socket) => {
-  socket.on('insertPerson', (input) => {
-    db.run(`INSERT INTO students (Name, Grade, DOB, Events)
-    VALUES (?, ?, ?, ?)`, ["Sajid Monowar", 8, "10/17/2008", "ok"], (err) => {
-      if (err) {
-        return console.log(err.message);
-      }
-      console.log(`This worked.`);
-    });
-  });
-
-  socket.on('update', (eventString, eventJson) => {
-    for (let otherSocket of ioNormal.sockets.sockets) {
-      let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
-      let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
-
-      if (!isMonitoring) continue;
-      db.get(lookupsql, [input.toLowerCase()], (err, row) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        if (row == undefined || !row ) {
-          return;
-        }
-        let events = JSON.parse(row.events);
-        let hasEvent = false;
-        for (let i=0; i< 1; i++) {
-          if (events[i].title) {
-            hasEvent = true; 
-          }
-        }
-
-        if (hasEvent) {
-
-        }
-
-        let array = [];
+    socket.on('lookup', (input) => {
+        socket.lastRequested = input;
         let blankobject = {
-          events: '', person: '', grade: '', dob: ''
+          events: {}, person: '', grade: '', dob: ''
         }
-        let object = {...blankobject}
-        object.events = row.events;
-        object.person = row.person;
-        object.grade = row.grade;
-        object.dob = row.dob;
-        array.push(object);
+        db.get(lookupsql, [input.toLowerCase()], (err, row) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          if (row == undefined || !row ) {
+            return console.log('Failed', input);
+          }
+          let object = {...blankobject};
+          object.events = JSON.parse(JSON.stringify(row.events));
+          object.person = input;
+          object.grade = row.grade;
+          object.dob = row.dob;
+          socket.emit('infoReturn', JSON.stringify(object));
+        });
+    });
 
-        otherSocket.emit('infoReturn', JSON.stringify(array));
+    socket.on('insertPerson', (input) => {
+        db.run(`INSERT INTO students (Name, Grade, DOB, Events)
+        VALUES (?, ?, ?, ?)`, ["sajid monowar", 8, "10/17/2008", `[{"title": "Ok", "time":"2:00 PM"}, {"title": "Ok2", "time":"1:30 PM"}]`], (err) => {
+        if (err) {
+            return console.log(err.message);
+        }
+        console.log(`This worked.`);
+        });
+    });
 
-        //db.run
-      });
-    }
+    socket.on('updateEvent', (eventJson) => {
+        for (let otherSocket of ioNormal.sockets.sockets) {
+            let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
+            let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
+
+            if (!isMonitoring) continue;
+            db.get(lookupsql, [lastRequested.toLowerCase()], (err, row) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (row == undefined || !row ) {
+                    return console.log('Failed', lastRequested.toLowerCase());
+                }
+                let events = JSON.parse(row.events);
+                let hasEvent = false;
+                for (let i=0; i< 1; i++) {
+                    if (events[i].title) {
+                        hasEvent = true; 
+                    }
+                }
+
+                if (hasEvent) {
+                    
+                }
+
+                let blankobject = {
+                    events: '', person: '', grade: '', dob: ''
+                }
+                let object = {...blankobject}
+                object.events = row.events;
+                object.person = row.person;
+                object.grade = row.grade;
+                object.dob = row.dob;
+
+                otherSocket.emit('infoReturn', JSON.stringify(object));
+
+                //db.run
+            });
+        }
   });
 
   socket.on('update', (input) => {
+    console.log('ok2');
     //db.run
     input = JSON.parse(input);
     for (let otherSocket of ioNormal.sockets.sockets) {
@@ -131,7 +146,6 @@ ioAdmin.on('connection', (socket) => {
       if (!isMonitoring) continue;
       if (lastRequested !== input.person) continue;
       
-      let array = [];
       let blankobject = {
         events: '', person: '', grade: '', dob: ''
       }
@@ -141,9 +155,8 @@ ioAdmin.on('connection', (socket) => {
       object.person = row.person;
       object.grade = row.grade;
       object.dob = row.dob;
-      array.push(object);
 
-      otherSocket.emit('infoReturn', JSON.stringify(array));
+      otherSocket.emit('infoReturn', JSON.stringify(object));
     }
   });
 });

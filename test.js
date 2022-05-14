@@ -5,7 +5,7 @@ let db = new sqlite3.Database('./info.db');
 db.run(`CREATE TABLE IF NOT EXISTS students (Name VARCHAR(100), Grade NUMBER, DOB VARCHAR(100), Events VARCHAR(100), UNIQUE(Name, DOB))`);
 
 db.run(`INSERT INTO students (Name, Grade, DOB, Events)
-    VALUES (?, ?, ?, ?)`, ["Sajid Monowar".toLowerCase(), 8, "10/17/2008", "ok"], (err) => {
+    VALUES (?, ?, ?, ?)`, ["sajid monowar".toLowerCase(), 8, "10/17/2008", `[{"title": "Ok", "time":"2:00 PM"}, {"title": "Ok2", "time":"1:30 PM"}]`], (err) => {
       if (err) {
         return console.log(err.message);
       }
@@ -19,7 +19,7 @@ let lookupsql = `SELECT Events events,
                  WHERE Name = ?
 `;
 
-db.get(lookupsql, ["Sajid Monowar"], (err, row) => {
+db.get(lookupsql, ["sajid monowar"], (err, row) => {
   if (err) {
     console.log(err);
     return;

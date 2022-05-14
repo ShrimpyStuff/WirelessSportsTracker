@@ -4,16 +4,16 @@
         <title>Boston Public School Sports Tracker</title>
         <link rel="stylesheet" type="text/css" href="../index.css">
     </head>
-    <body>
+    <body style="overflow: auto;">
         <label class="switch">
             <input type="checkbox" id="darkmodeSwitch">
             <span class="slider round"></span>
         </label>
         <img class="center" width="15%" height="15%" src="../favicon.ico"/>
         <table>
-            <caption id="name">Name: <idkthisisrandom id="nameText" onclick="document.execCommand('selectAll', false, null)" contenteditable>Edit this</idkthisisrandom></caption>
-            <caption id="grade">Grade: <idkthisisrandom id="gradeText" onclick="document.execCommand('selectAll', false, null)" contenteditable>Edit this</idkthisisrandom></caption>
-            <caption id="dob">DOB (MM/DD/YYYY): <idkthisisrandom id="dobText" onclick="document.execCommand('selectAll', false, null)" contenteditable>Edit this</idkthisisrandom></caption>
+            <caption id="name">Name: <input id="nameText" type="string" placeholder="Edit this"/></caption>
+            <caption id="grade">Grade: <input id="gradeText" type="string" placeholder="Edit this"/></caption>
+            <caption id="dob">DOB (MM/DD/YYYY): <input id="dobText" type="string" placeholder="Edit this"/></caption>
             <tr style="background-color: #13A4DB;">
                 <th>Event Name</th>
                 <th>Time</th>
@@ -24,11 +24,13 @@
                     <th contenteditable="true"></th>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
+                    <td><button type="checkbox" onclick="removeRow(event.rowIndex)">Remove row</button></td>
                 </tr>
                 <tr>
                     <th contenteditable="true"></th>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
+                    <td><button type="checkbox" onclick="removeRow(event.rowIndex)">Remove row</button></td>
                 </tr>
             </tbody>
         </table>
@@ -38,7 +40,7 @@
             <button type="submit">Submit</button>
         </form>
         <script src="../darkmode.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
+        <script src="/admin_socket.io/socket.io.js"></script>
         <script src="../adminSite/index.js"></script>
     </body>
 </html>

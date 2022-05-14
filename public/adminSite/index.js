@@ -1,4 +1,6 @@
-let socket = io();
+let socket = io({
+    path: "/admin_socket.io/"
+  });
 let table = document.getElementById('table');
 let nameCaption = document.getElementById('nameText');
 let gradeCaption = document.getElementById('gradeText');
@@ -9,19 +11,34 @@ document.getElementById('Lookup').addEventListener('click', (e) => {
     while (table.firstChild) {
         table.removeChild(table.firstChild);
     }
-    socket.emit('lookup', nameCaption.textContent.trim());
+    socket.emit('lookup', nameCaption.value.trim());
 });
 
-let removeRow = (e, row) => {
+let removeRow = (row) => {
     table.deleteRow(row);
 };
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (nameCaption.textContent.trim().toLowerCase().match(/^(edit this|events||)$/)) {
-        socket.emit('update', 'Event Update', eventJson);
+    if (nameCaption.value.trim().toLowerCase().match(/^(edit this|events||)$/)) {
+        let eventJson = [];
+        for (let row of table.rows) {
+            let rowObject = {title: '', time: '', finished: false, placing: ''};
+            rowObject.title = row.children[0].textContent;
+            rowObject.time = row.children[1].textContent;
+            if (rowObject.title == '' || rowObject.time == '') {
+                continue;
+            }
+            rowObject.placing = row.children[2].textContent;
+            if (!rowObject.placing || rowObject.placing != undefined) {
+                rowObject.finished = true;
+            }
+            eventJson.push(rowObject);
+        }
+        console.log(JSON.stringify(eventJson));
+        socket.emit('updateEvent', eventJson);
     } else {
-        socket.emit('update', nameCaption.textContent.trim())
+        socket.emit('update', nameCaption.value.trim())
     }
 })
 
@@ -45,6 +62,15 @@ document.getElementById('newEventRow').addEventListener('click', (e) => {
     placing.appendChild(document.createTextNode(''));
     
     event.appendChild(placing);
+    
+    let checkbox = document.createElement('td');
+    let checkboxButton = document.createElement('button');
+    checkboxButton.type = "checkbox";
+    checkboxButton.appendChild(document.createTextNode('Remove row'));
+    checkbox.appendChild(checkboxButton);
+    checkboxButton.addEventListener('click', (e) => { removeRow(e, event.rowIndex) });
+    event.appendChild(checkbox);
+    
     table.appendChild(event);
 });
 
@@ -52,6 +78,8 @@ socket.on('infoReturn', (json) => {
     let jsonParse = JSON.parse(JSON.parse(JSON.stringify(json)));
     let eventsParse = JSON.parse(jsonParse.events);
     
+    console.log(jsonParse)
+    console.log(eventsParse)
     for (let dataObject of eventsParse) {
         nameCaption.textContent = json.person;
         gradeCaption.textContent = json.grade;
@@ -85,7 +113,7 @@ socket.on('infoReturn', (json) => {
         checkboxButton.type = "checkbox";
         checkboxButton.appendChild(document.createTextNode('Remove row'));
         checkbox.appendChild(checkboxButton);
-        checkboxButton.addEventListener('click', (e) => { removeRow(e, event.rowIndex) });
+        checkboxButton.addEventListener('click', (e) => { removeRow(event.rowIndex) });
         event.appendChild(checkbox);
 
         table.appendChild(event);
