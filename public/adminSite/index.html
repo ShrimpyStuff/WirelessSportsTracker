@@ -3,6 +3,18 @@
     <head>
         <title>Boston Public School Sports Tracker</title>
         <link rel="stylesheet" type="text/css" href="../index.css">
+
+        <style>
+            input {
+                border: none;
+                display: inline;
+                font-family: inherit;
+                font-size: inherit;
+                padding: 0px;
+                width: auto;
+                background-color: inherit;
+            }
+        </style>
     </head>
     <body style="overflow: auto;">
         <label class="switch">
@@ -24,13 +36,13 @@
                     <th contenteditable="true"></th>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
-                    <td><button type="checkbox" onclick="removeRow(event.rowIndex)">Remove row</button></td>
+                    <td><button type="checkbox" onclick="removeRow(this.parentNode.parentNode.rowIndex)">Remove row</button></td>
                 </tr>
                 <tr>
                     <th contenteditable="true"></th>
                     <td contenteditable="true"></td>
                     <td contenteditable="true"></td>
-                    <td><button type="checkbox" onclick="removeRow(event.rowIndex)">Remove row</button></td>
+                    <td><button type="checkbox" onclick="removeRow(this.parentNode.parentNode.rowIndex)">Remove row</button></td>
                 </tr>
             </tbody>
         </table>

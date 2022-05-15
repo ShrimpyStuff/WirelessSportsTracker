@@ -93,70 +93,78 @@ ioAdmin.on('connection', (socket) => {
         });
     });
 
-    socket.on('updateEvent', (eventJson) => {
-        for (let otherSocket of ioNormal.sockets.sockets) {
-            let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
-            let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
+    socket.on('updateEvent', (eventJsonString) => {
+      for (let otherSocket of ioNormal.sockets.sockets) {
+          let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
+          let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
 
-            if (!isMonitoring) continue;
-            db.get(lookupsql, [lastRequested.toLowerCase()], (err, row) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                if (row == undefined || !row ) {
-                    return console.log('Failed', lastRequested.toLowerCase());
-                }
-                let events = JSON.parse(row.events);
-                let hasEvent = false;
-                for (let i=0; i< 1; i++) {
-                    if (events[i].title) {
-                        hasEvent = true; 
-                    }
-                }
+          if (!isMonitoring) continue;
+          db.get(lookupsql, [lastRequested.toLowerCase()], (err, row) => {
+              if (err) {
+                  console.log(err);
+                  return;
+              }
+              if (row == undefined || !row ) {
+                  return console.log('Failed', lastRequested.toLowerCase());
+              }
+              let events = JSON.parse(row.events);
+              let eventJson = JSON.parse(eventJsonString);
+              for (let i=0; i < events.length - 1; i++) {
+                  if (events[i].title == eventJson[i].title) {
+                      hasEvent(i, eventJson[i], otherSocket);
+                  }
+              }
 
-                if (hasEvent) {
-                    
-                }
-
+              function hasEvent(rowNumber, changedEvent, otherSocket) {
                 let blankobject = {
                     events: '', person: '', grade: '', dob: ''
                 }
                 let object = {...blankobject}
                 object.events = row.events;
+                let changedEvents = JSON.parse(object.events);
+                changedEvents[rowNumber] = changedEvent;
+                object.events = JSON.stringify(changedEvents);
                 object.person = row.person;
                 object.grade = row.grade;
                 object.dob = row.dob;
 
-                otherSocket.emit('infoReturn', JSON.stringify(object));
+                ioNormal.to(JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).id).emit('infoReturn', JSON.stringify(object));
+              }
 
-                //db.run
-            });
-        }
+              //db.run
+          });
+      }
   });
 
-  socket.on('update', (input) => {
-    console.log('ok2');
+  socket.on('update', (input, eventJson) => {
     //db.run
-    input = JSON.parse(input);
     for (let otherSocket of ioNormal.sockets.sockets) {
       let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
       let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
 
       if (!isMonitoring) continue;
-      if (lastRequested !== input.person) continue;
-      
-      let blankobject = {
-        events: '', person: '', grade: '', dob: ''
-      }
-      let object = {...blankobject}
+      if (lastRequested != input.toLowerCase()) continue;
 
-      object.events = row.events;
-      object.person = row.person;
-      object.grade = row.grade;
-      object.dob = row.dob;
+      db.get(lookupsql, [lastRequested.toLowerCase()], (err, row) => {
+          if (err) {
+              console.log(err);
+              return;
+          }
+          if (row == undefined || !row ) {
+              return console.log('Failed', lastRequested.toLowerCase());
+          }
 
-      otherSocket.emit('infoReturn', JSON.stringify(object));
+          let blankobject = {
+              events: '', person: '', grade: '', dob: ''
+          }
+          let object = {...blankobject}
+          object.events = eventJson;
+          object.person = input;
+          object.grade = row.grade;
+          object.dob = row.dob;
+
+          ioNormal.to(JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).id).emit('infoReturn', JSON.stringify(object));
+      });
     }
   });
 });

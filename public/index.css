@@ -124,13 +124,3 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
-
-input {
-    border: none;
-    display: inline;
-    font-family: inherit;
-    font-size: inherit;
-    padding: 0px;
-    width: auto;
-    background-color: inherit;
-}

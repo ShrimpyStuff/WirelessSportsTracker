@@ -3,15 +3,14 @@ let table = document.getElementById('table');
 let form = document.getElementById('form');
 let input = document.getElementById('fullname');
 let monitor = document.getElementById('monitor');
+let nameCaption = document.getElementById('name');
+let gradeCaption = document.getElementById('grade');
+let dobCaption = document.getElementById('dob');
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (input.value) {
-        while (table.firstChild) {
-            table.removeChild(table.firstChild);
-        }
         socket.emit('lookup', input.value.toLowerCase());
-        input.value = '';
     }
 });
 
@@ -20,15 +19,17 @@ monitor.addEventListener('click', (e) => {
 });
 
 socket.on('infoReturn', (json) => {
-    console.log(json);
     monitor.disabled = false;
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
+    }
     let jsonParse = JSON.parse(JSON.parse(JSON.stringify(json)));
     let eventsParse = JSON.parse(jsonParse.events);
     
     for (let dataObject of eventsParse) {
-        nameCaption.textContent = json.person;
-        gradeCaption.textContent = json.grade;
-        dobCaption.textContent = json.dob;
+        nameCaption.innerText = input.value.trim();
+        gradeCaption.innerText = jsonParse.grade;
+        dobCaption.innerText = jsonParse.dob;
         let event = document.createElement('tr');
 
         let title = document.createElement('th');
