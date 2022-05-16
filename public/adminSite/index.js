@@ -43,7 +43,7 @@ form.addEventListener('submit', (e) => {
                 continue;
             }
             rowObject.placing = row.children[2].innerText;
-            if (rowObject.placing && rowObject.placing != undefined && rowObject.placing != '') {
+            if (rowObject.placing && rowObject.placing != undefined && rowObject.placing != '' && rowObject.placing != "Event not finished or") {
                 rowObject.finished = true;
             }
             eventJson.push(rowObject);

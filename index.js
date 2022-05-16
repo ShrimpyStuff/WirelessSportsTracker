@@ -94,6 +94,8 @@ ioAdmin.on('connection', (socket) => {
     });
 
     socket.on('updateEvent', (eventJsonString) => {
+      //db.run
+      
       for (let otherSocket of ioNormal.sockets.sockets) {
           let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
           let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
@@ -130,14 +132,12 @@ ioAdmin.on('connection', (socket) => {
 
                 ioNormal.to(JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).id).emit('infoReturn', JSON.stringify(object));
               }
-
-              //db.run
           });
       }
   });
 
   socket.on('update', (input, eventJson) => {
-    //db.run
+    db.run(`UPDATE students SET events = ? WHERE name=?`, [eventJson, input.toLowerCase()]);
     for (let otherSocket of ioNormal.sockets.sockets) {
       let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
       let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
