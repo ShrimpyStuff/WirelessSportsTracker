@@ -62,7 +62,7 @@ document.getElementById('newEventRow').addEventListener('click', (e) => {
     event.appendChild(title);
 
     let time = document.createElement('td');
-    let timeTextNode = document.createTextNode('');
+    let timeTextNode = document.createTextNode('Unknown');
     time.contentEditable = 'true';
     time.appendChild(timeTextNode);
     event.appendChild(time);
@@ -90,6 +90,11 @@ socket.on('infoReturn', (json) => {
     }
 
     let jsonParse = JSON.parse(JSON.parse(JSON.stringify(json)));
+    nameCaption.value = nameCaption.value.trim();
+    gradeCaption.value = jsonParse.grade;
+    dobCaption.value = jsonParse.dob;
+
+    if (!jsonParse.events || jsonParse.events == undefined) return;
     let eventsParse = JSON.parse(jsonParse.events);
     
     for (let dataObject of eventsParse) {
