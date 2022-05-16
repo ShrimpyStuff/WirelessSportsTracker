@@ -94,8 +94,21 @@ ioAdmin.on('connection', (socket) => {
     });
 
     socket.on('updateEvent', (eventJsonString) => {
-      //db.run
-      
+      db.each(`SELECT * FROM students`, (err, row) => {
+        let rowEvents = JSON.parse(row.events);
+        let eventJson = JSON.parse(eventJsonString);
+        for (let i=0; i < rowEvents.length - 1; i++) {
+          for (let j = 0; j < eventJson.length - 1; j++) {
+            if (rowEvents[i].title == eventJson[j].title) {
+              let changedEvents = JSON.parse(row.events);
+              changedEvents[rowNumber] = changedEvent;
+              rowEvents = changedEvents;
+              db.run(`UPDATE students SET events = ? WHERE name = ?`, [rowEvents, row.name]);
+            }
+          }
+        }
+      }); 
+
       for (let otherSocket of ioNormal.sockets.sockets) {
           let isMonitoring = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).monitoring;
           let lastRequested = JSON.parse(JSON.stringify(otherSocket[1], getCircularReplacer())).lastRequested;
@@ -112,9 +125,11 @@ ioAdmin.on('connection', (socket) => {
               let events = JSON.parse(row.events);
               let eventJson = JSON.parse(eventJsonString);
               for (let i=0; i < events.length - 1; i++) {
-                  if (events[i].title == eventJson[i].title) {
-                      hasEvent(i, eventJson[i], otherSocket);
+                for (let j = 0; j < eventJson.length - 1; j++) {
+                  if (events[i].title == eventJson[j].title) {
+                    hasEvent(i, changedEvent, otherSocket);
                   }
+                }
               }
 
               function hasEvent(rowNumber, changedEvent, otherSocket) {
