@@ -2,6 +2,7 @@
   "dependencies": {
     "express": "^4.17.3",
     "socket.io": "^4.4.1",
-    "sqlite3": "github:mapbox/node-sqlite3"
+    "sqlite3": "github:mapbox/node-sqlite3",
+    "xlsx": "^0.18.5"
   }
 }
