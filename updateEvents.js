@@ -3,28 +3,30 @@ const reader = require('xlsx');
 
 let db = new sqlite3.Database('./info.db');
 const file = reader.readFile('./Events Sheet.xlsx')
-  
-let data = []
+
+let people = []
 const sheets = file.SheetNames
 
-for(let i = 0; i < sheets.length; i++)
-{
-  let event = {};
-  event[file.SheetNames[i]] = {};
-   const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[i]])
-   temp.forEach((res) => {
-      event[file.SheetNames[i]].push(res);
-   })
-   data.push(event);
-}
-
-for (let i = 0; i < data.length; i++) {
-  let peopleName = data[i].name.replace(/(.*), ([^\s]+).*/, "$2 $1");
-
-  db.run(`UPDATE students SET Events=? WHERE Name=?)`, [events, peopleName.toLowerCase()], (err) => {
-    if (err) {
-        return console.log(err.message);
+for (let i = 0; i < sheets.length; i++) {
+  const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[i]])
+  temp.forEach((res) => {
+    for (let person in res) {
+      if (typeof people[res[person]] != "object") {
+          people[res[person]] = [];
+      }
+      people[res[person]].push(`${file.SheetNames[i]} ${person}`);
     }
-    console.log(`This worked.`, peopleName);
-  });
+  })
 }
+
+//for (let i = 0; i < data.length; i++) {
+  //Object.keys(people)
+  //let peopleName = data[i].name.replace(/(.*), ([^\s]+).*/, "$2 $1");
+
+  //db.run(`UPDATE students SET Events=? WHERE Name=?)`, [events, peopleName.toLowerCase()], (err) => {
+    //if (err) {
+      //  return console.log(err.message);
+    //}
+    //console.log(`This worked.`, peopleName);
+  //});
+//}
