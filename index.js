@@ -83,16 +83,6 @@ ioAdmin.on('connection', (socket) => {
         });
     });
 
-    socket.on('insertPerson', (input) => {
-        db.run(`INSERT INTO students (Name, Grade, DOB, Events)
-        VALUES (?, ?, ?, ?)`, ["sajid monowar", 8, "10/17/2008", `[{"title": "Ok", "time":"2:00 PM"}, {"title": "Ok2", "time":"1:30 PM"}]`], (err) => {
-        if (err) {
-            return console.log(err.message);
-        }
-        console.log(`This worked.`);
-        });
-    });
-
     socket.on('updateEvent', (eventJsonString) => {
       db.each(`SELECT * FROM students`, (err, row) => {
         let rowEvents = JSON.parse(row.events);
