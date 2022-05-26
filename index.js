@@ -7,6 +7,7 @@ const { Server } = require("socket.io");
 const ioNormal = new Server(server);
 const ioAdmin = new Server(server, {path: "/admin_socket.io/"});
 const port = 80;
+//const serverIp = '192.168.16.1';
 const serverIp = '0.0.0.0';
 
 app.use(express.static(__dirname + '/public'));
@@ -85,15 +86,16 @@ ioAdmin.on('connection', (socket) => {
 
     socket.on('updateEvent', (eventJsonString) => {
       db.each(`SELECT * FROM students`, (err, row) => {
-        let rowEvents = JSON.parse(row.events);
+        if (!row.Events || row.Events == undefined) {return;}
+        let rowEvents = JSON.parse(row.Events);
         let eventJson = JSON.parse(eventJsonString);
-        for (let i=0; i < rowEvents.length - 1; i++) {
-          for (let j = 0; j < eventJson.length - 1; j++) {
+        for (let i=0; i < rowEvents.length; i++) {
+          for (let j = 0; j < eventJson.length; j++) {
             if (rowEvents[i].title == eventJson[j].title) {
-              let changedEvents = JSON.parse(row.events);
-              changedEvents[rowNumber] = changedEvent;
+              let changedEvents = rowEvents;
+              changedEvents[i] = eventJson[j];
               rowEvents = changedEvents;
-              db.run(`UPDATE students SET events = ? WHERE name = ?`, [rowEvents, row.name]);
+              db.run(`UPDATE students SET events = ? WHERE name = ?`, [JSON.stringify(rowEvents), row.Name]);
             }
           }
         }
